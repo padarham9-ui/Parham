@@ -1,8 +1,7 @@
-
-![null](https://raw.githubusercontent.com/padarham9-ui/CONFIG/refs/heads/main/InShot_%DB%B2%DB%B0%DB%B2%DB%B6%DB%B0%DB%B1%DB%B0%DB%B6_%DB%B1%DB%B6%DB%B4%DB%B0%DB%B0%DB%B6%DB%B4%DB%B2%DB%B6.png)
-# ساخت کانفیگ
-config :
+![null](https://raw.githubusercontent.com/padarham9-ui/Parham/refs/heads/main/IMG_20260106_151655_858.jpg)
+# سلام
+سلام
 ```text
-کانفبگ
+س
 ```
-[Button](https://google.com)
+[Button](https://raw.githubusercontent.com/padarham9-ui/Parham/refs/heads/main/IMG_20260106_151655_858.jpg)
