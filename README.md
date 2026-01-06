@@ -1,8 +1,8 @@
 
-![null](https://google.com)
-#سلام داداش
-خوبی ببم جان
+![null](https://raw.githubusercontent.com/padarham9-ui/CONFIG/refs/heads/main/InShot_%DB%B2%DB%B0%DB%B2%DB%B6%DB%B0%DB%B1%DB%B0%DB%B6_%DB%B1%DB%B6%DB%B4%DB%B0%DB%B0%DB%B6%DB%B4%DB%B2%DB%B6.png)
+# ساخت کانفیگ
+config :
 ```text
-عشق منی
+کانفبگ
 ```
 [Button](https://google.com)
