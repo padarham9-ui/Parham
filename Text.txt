@@ -1,0 +1,99 @@
+// لیست DNS Provider ها 
+const DOH_PROVIDERS = [
+  {
+    name: "Cloudflare",
+    url: "https://cloudflare-dns.com/dns-query",
+    weight: 100
+  }
+];
+
+// زمان کش (۵ دقیقه)
+const CACHE_TTL = 300;
+
+export default {
+  async fetch(request, env, ctx) {
+    return handleRequest(request);
+  }
+};
+
+async function handleRequest(request) {
+  const url = new URL(request.url);
+
+  // صفحه اصلی فقط لینک DNS را نشان دهد
+  if (url.pathname === '/') {
+    const endpoint = new URL(request.url);
+    endpoint.pathname = '/dns-query';
+    return new Response(endpoint.toString(), {
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+    });
+  }
+
+  // CORS
+  if (request.method === 'OPTIONS') {
+    return handleCORS();
+  }
+
+  if (url.pathname !== '/dns-query') {
+    return new Response('آدرس اشتباه است. فقط /dns-query معتبر است', { status: 400 });
+  }
+
+  const isGet = request.method === 'GET';
+  const isPost = request.method === 'POST';
+
+  if (!isGet && !isPost) {
+    return new Response('فقط GET یا POST مجاز است', { status: 405 });
+  }
+
+  if (isGet && !url.searchParams.has('dns')) {
+    return new Response('پارامتر dns وجود ندارد', { status: 400 });
+  }
+
+  const provider = selectProvider(DOH_PROVIDERS);
+
+  try {
+    const targetUrl = provider.url + url.search;
+    const headers = new Headers(request.headers);
+
+    if (isPost) {
+      headers.set('Content-Type', 'application/dns-message');
+    } else {
+      headers.set('Accept', 'application/dns-message');
+    }
+
+    headers.set('User-Agent', 'DoH-Proxy-Hich/1.0');
+
+    const upstream = new Request(targetUrl, {
+      method: request.method,
+      headers,
+      body: isPost ? await request.arrayBuffer() : null
+    });
+
+    const response = await fetch(upstream);
+    const resHeaders = new Headers(response.headers);
+
+    resHeaders.set('Access-Control-Allow-Origin', '*');
+    resHeaders.set('Cache-Control', `public, max-age=${CACHE_TTL}`);
+
+    return new Response(response.body, {
+      status: response.status,
+      headers: resHeaders
+    });
+  } catch (e) {
+    return new Response('DNS Provider در دسترس نیست', { status: 503 });
+  }
+}
+
+function handleCORS() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    }
+  });
+}
+
+function selectProvider(providers) {
+  return providers[0];
+}
